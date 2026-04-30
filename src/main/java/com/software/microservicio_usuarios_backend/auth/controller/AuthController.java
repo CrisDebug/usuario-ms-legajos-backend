@@ -1,0 +1,26 @@
+package com.software.microservicio_usuarios_backend.auth.controller;
+
+import com.software.microservicio_usuarios_backend.auth.dto.LoginRequestDTO;
+import com.software.microservicio_usuarios_backend.auth.dto.LoginResponseDTO;
+import com.software.microservicio_usuarios_backend.auth.service.AuthService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * Controlador de autenticación
+ */
+@RestController
+@RequestMapping("/api/auth")
+public class AuthController {
+
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
+        return ResponseEntity.ok(authService.login(request));
+    }
+}
