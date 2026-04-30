@@ -1,6 +1,7 @@
 package com.software.microservicio_usuarios_backend.service.impl;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import com.software.microservicio_usuarios_backend.dto.UsuarioRequestDTO;
 import com.software.microservicio_usuarios_backend.dto.UsuarioResponseDTO;
 import com.software.microservicio_usuarios_backend.entity.Usuario;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * Implementación del servicio Usuario.
- * Aquí va la lógica de negocio real.
+ * Contiene la lógica de negocio del CRUD de usuarios.
  */
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
@@ -24,16 +25,17 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     /**
-     * Inyección por constructor (la más recomendada).
+     * Inyección por constructor (buena práctica Spring).
      */
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, BCryptPasswordEncoder passwordEncoder) {
-    this.usuarioRepository = usuarioRepository;
-    this.passwordEncoder = passwordEncoder;
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository,
+                              BCryptPasswordEncoder passwordEncoder) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
-     * Convierte una entidad Usuario a un DTO de respuesta.
-     * (Nunca devolvemos password al cliente).
+     * Convierte entidad Usuario a DTO de respuesta.
+     * Nunca se expone el password al frontend.
      */
     private UsuarioResponseDTO mapToResponseDTO(Usuario usuario) {
         return new UsuarioResponseDTO(
@@ -41,29 +43,32 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getNombreUsuario(),
                 usuario.getEmail(),
                 usuario.getEstado(),
-                usuario.getFechaCreacion()
+                usuario.getFechaCreacion(),
+                usuario.getRol() // 🔥 IMPORTANTE: ahora incluimos rol
         );
     }
 
     @Override
     public UsuarioResponseDTO crearUsuario(UsuarioRequestDTO requestDTO) {
 
-        // Validar si el email ya existe
+        // Validación de email duplicado
         if (usuarioRepository.existsByEmail(requestDTO.getEmail())) {
-            throw new RuntimeException("Ya existe un usuario registrado con ese email: " + requestDTO.getEmail());
+            throw new RuntimeException("Ya existe un usuario con ese email: " + requestDTO.getEmail());
         }
 
         Usuario usuario = new Usuario();
         usuario.setNombreUsuario(requestDTO.getNombreUsuario());
         usuario.setEmail(requestDTO.getEmail());
 
-        // IMPORTANTE: aquí deberías encriptar el password (más adelante lo hacemos con BCrypt)
+        // Encriptación de password
         usuario.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
 
         // Estado por defecto
         usuario.setEstado("ACTIVO");
 
-        // Fecha actual (aunque la tabla ya tiene DEFAULT, lo seteamos igual por consistencia)
+        // Rol por defecto (IMPORTANTE PARA PAUTA)
+        usuario.setRol("USER");
+
         usuario.setFechaCreacion(LocalDateTime.now());
 
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
@@ -74,9 +79,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public List<UsuarioResponseDTO> listarUsuarios() {
 
-        List<Usuario> usuarios = usuarioRepository.findAll();
-
-        return usuarios.stream()
+        return usuarioRepository.findAll()
+                .stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -85,7 +89,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioResponseDTO obtenerUsuarioPorId(Long idUsuario) {
 
         Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + idUsuario));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Usuario no encontrado con ID: " + idUsuario));
 
         return mapToResponseDTO(usuario);
     }
@@ -94,13 +99,13 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioResponseDTO actualizarUsuario(Long idUsuario, UsuarioRequestDTO requestDTO) {
 
         Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + idUsuario));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Usuario no encontrado con ID: " + idUsuario));
 
-        // Actualizamos los campos
         usuario.setNombreUsuario(requestDTO.getNombreUsuario());
         usuario.setEmail(requestDTO.getEmail());
 
-        // Si quieres permitir cambiar password:
+        // Encriptación siempre aplicada
         usuario.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
 
         Usuario usuarioActualizado = usuarioRepository.save(usuario);
@@ -112,8 +117,10 @@ public class UsuarioServiceImpl implements UsuarioService {
     public void eliminarUsuario(Long idUsuario) {
 
         Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + idUsuario));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Usuario no encontrado con ID: " + idUsuario));
 
         usuarioRepository.delete(usuario);
     }
+
 }

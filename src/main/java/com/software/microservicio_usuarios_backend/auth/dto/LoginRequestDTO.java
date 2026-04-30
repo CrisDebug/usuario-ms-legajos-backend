@@ -6,7 +6,7 @@ package com.software.microservicio_usuarios_backend.auth.dto;
 public class LoginRequestDTO {
 
     private String email;
-    private String password;
+    private String password;    
 
     public LoginRequestDTO() {
     }

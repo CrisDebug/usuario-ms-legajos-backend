@@ -13,6 +13,7 @@ public class UsuarioResponseDTO {
     private String email;
     private String estado;
     private LocalDateTime fechaCreacion;
+    private String rol;
 
     // ===========================
     // CONSTRUCTORES
@@ -21,12 +22,13 @@ public class UsuarioResponseDTO {
     public UsuarioResponseDTO() {
     }
 
-    public UsuarioResponseDTO(Long idUsuario, String nombreUsuario, String email, String estado, LocalDateTime fechaCreacion) {
+    public UsuarioResponseDTO(Long idUsuario, String nombreUsuario, String email, String estado, LocalDateTime fechaCreacion,String rol) {
         this.idUsuario = idUsuario;
         this.nombreUsuario = nombreUsuario;
         this.email = email;
         this.estado = estado;
         this.fechaCreacion = fechaCreacion;
+        this.rol = rol;
     }
 
     // ===========================
@@ -71,5 +73,14 @@ public class UsuarioResponseDTO {
 
     public void setFechaCreacion(LocalDateTime fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
+    }
+
+    public String getRol()
+    {
+        return rol;
+    }
+    public void setRol(String rol)
+    {
+        this.rol = rol;
     }
 }

@@ -9,15 +9,18 @@ public class LoginResponseDTO {
     private String nombreUsuario;
     private String email;
     private String mensaje;
+    private String rol;
 
     public LoginResponseDTO() {
     }
 
-    public LoginResponseDTO(Long idUsuario, String nombreUsuario, String email, String mensaje) {
+    public LoginResponseDTO(Long idUsuario, String nombreUsuario, String email, String mensaje,String rol) {
         this.idUsuario = idUsuario;
         this.nombreUsuario = nombreUsuario;
         this.email = email;
         this.mensaje = mensaje;
+        this.rol = rol;
+
     }
 
     public Long getIdUsuario() {
@@ -50,5 +53,14 @@ public class LoginResponseDTO {
 
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
+    }
+    //rol
+    public String getRol()
+    {
+        return rol;
+    }
+    public void setRol(String rol)
+    {
+        this.rol = rol;
     }
 }

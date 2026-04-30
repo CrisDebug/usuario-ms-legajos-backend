@@ -35,4 +35,10 @@ public interface UsuarioService {
      * Eliminar usuario.
      */
     void eliminarUsuario(Long idUsuario);
+
+    
+    /**
+     * Eliminar usuario.
+     */
+    
 }
