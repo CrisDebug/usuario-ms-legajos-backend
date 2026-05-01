@@ -64,11 +64,12 @@ public class AuthServiceImpl implements AuthService {
         // 📦 4. Retornar respuesta al frontend
         //    ahora el "mensaje" contiene el token JWT
         return new LoginResponseDTO(
-                usuario.getIdUsuario(),
-                usuario.getNombreUsuario(),
-                usuario.getEmail(),
-                usuario.getRol(),
-                token
+        usuario.getIdUsuario(),
+        usuario.getNombreUsuario(),
+        usuario.getEmail(),
+        usuario.getRol(),     // rol correcto
+        token,                // token correcto
+        "LOGIN EXITOSO"       // mensaje
         );
     }
 
