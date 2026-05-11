@@ -44,3 +44,19 @@ Ejemplo:
   "email": "testuser@test.com",
   "password": "123456"
 }
+
+POST /api/auth/login
+
+{
+  "email": "testuser@test.com",
+  "password": "123456"
+}
+
+{
+  "idUsuario": 1,
+  "nombreUsuario": "test user",
+  "email": "testuser@test.com",
+  "rol": "USER",
+  "token": "JWT_TOKEN_GENERADO",
+  "mensaje": "LOGIN EXITOSO"
+}

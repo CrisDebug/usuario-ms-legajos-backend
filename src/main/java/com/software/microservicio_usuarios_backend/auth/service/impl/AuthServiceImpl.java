@@ -8,6 +8,9 @@ import com.software.microservicio_usuarios_backend.auth.dto.RegisterResponseDTO;
 import com.software.microservicio_usuarios_backend.auth.service.AuthService;
 import com.software.microservicio_usuarios_backend.entity.Usuario;
 import com.software.microservicio_usuarios_backend.repository.UsuarioRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -76,6 +79,7 @@ public class AuthServiceImpl implements AuthService {
     // ==========================
     // REGISTER
     // ==========================
+    @Transactional
     @Override
     public RegisterResponseDTO register(RegisterRequestDTO request) {
 

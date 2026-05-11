@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
  * Representa la tabla USUARIO en la base de datos Oracle.
  */
 @Entity
-@Table(name = "USUARIO")
+@Table(name = "USUARIO", schema = "APP_ADMIN")
 public class Usuario {
 
     /**
